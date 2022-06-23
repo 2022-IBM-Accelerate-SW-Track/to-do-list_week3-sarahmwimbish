@@ -33,11 +33,46 @@ afterEach(() => {
   fireEvent.change(inputDate, {target: {value: dueDate}});
   fireEvent.click(element);
 
-  const check = screen.getByText(task);
-  expect(check.length).toBe(1)
+  const check = screen.getAllByText(/lawn/i);
+  expect(check.length).toBe(1);
  });
 
+
  test('test that App component doesn\'t add a task without task name', () => {
+  render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByPlaceholderText("mm/dd/yyyy");
+  const element = screen.getByRole('button', {name: /Add/i});
+
+  const dueDate = "08/05/2002";
+
+  fireEvent.change(inputTask, {target: {value: ""}});
+  fireEvent.change(inputDate, {target: {value: dueDate}});
+  fireEvent.click(element);
+
+  const check = screen.getAllByRole("link");
+  expect(check.length).toBe(2);
+ });
+
+
+ test('test that App component doesn\'t add a task without due date', () => {
+  render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByPlaceholderText("mm/dd/yyyy");
+  const element = screen.getByRole('button', {name: /Add/i});
+
+  const task = "mow the lawn";
+
+  fireEvent.change(inputTask, {target: {value: task}});
+  fireEvent.click(element);
+
+  const check = screen.getAllByRole("link");
+  expect(check.length).toBe(2); 
+});
+
+
+
+ test('test that App component can be deleted thru checkbox', () => {
   render(<App />);
   const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
   const inputDate = screen.getByPlaceholderText("mm/dd/yyyy");
@@ -46,28 +81,34 @@ afterEach(() => {
   const task = "mow the lawn";
   const dueDate = "08/05/2002";
 
-  fireEvent.change(inputTask, {target: {value: "History Test"}});
-  fireEvent.change(inputDate, {target: {value: dueDate}});
-  fireEvent.click(element);
-  fireEvent.change(inputTask, {target: {value: "History Test"}});
+  fireEvent.change(inputTask, {target: {value: task}});
   fireEvent.change(inputDate, {target: {value: dueDate}});
   fireEvent.click(element);
 
-  const check = screen.getByText(/History Test/i)
-  expect(check.length).toBe(1)
- });
+  const check = screen.getAllByRole("link");
+  expect(check.length).toBe(3);
 
- test('test that App component doesn\'t add a task without due date', () => {
-  render(<App />);
- });
+  const checkbox = screen.getByRole('checkbox');
+  fireEvent.click(checkbox);
 
-
-
- test('test that App component can be deleted thru checkbox', () => {
-  render(<App />);
+  const check2 = screen.getAllByRole("link");
+  expect(check2.length).toBe(2);
  });
 
 
  test('test that App component renders different colors for past due events', () => {
   render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByPlaceholderText("mm/dd/yyyy");
+  const element = screen.getByRole('button', {name: /Add/i});
+
+  const task = "mow the lawn";
+  const dueDate = "08/05/2002";
+
+  fireEvent.change(inputTask, {target: {value: task}});
+  fireEvent.change(inputDate, {target: {value: dueDate}});
+  fireEvent.click(element);
+
+  const check = screen.getByTestId(/lawn/i).style.background;
+  expect(check).toBe("red");
  });

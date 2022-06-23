@@ -14,6 +14,7 @@ const Todos = ({ todos, deleteTodo }) => {
     todos.map((todo, color = "white") => {
       const curDate = new Date();
       const dueDate = new Date(todo.due);
+      
       if (curDate > dueDate) {
         color = "red";
       }
